@@ -12,8 +12,8 @@ jobs:
     HTTP_RETRIES: 4
   steps:
     - powershell: |
-        Invoke-WebRequest -MaximumRetryCount $env:TTP_RETRIES -OutFile msmpisetup.exe https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisetup.exe
-        Invoke-WebRequest -MaximumRetryCount $env:HTTP_RETRIES -OutFile msmpisdk.msi https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisdk.msi
+        Invoke-WebRequest -OutFile msmpisetup.exe https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisetup.exe
+        Invoke-WebRequest -OutFile msmpisdk.msi https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisdk.msi
         msmpisetup.exe -unattend
         msmpisdk.msi /passive
     - script: |
