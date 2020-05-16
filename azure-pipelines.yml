@@ -11,37 +11,8 @@ jobs:
     COMPILER: gcc
     HTTP_RETRIES: 4
   steps:
-    - powershell: |
-        Invoke-WebRequest -OutFile msmpisetup.exe https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisetup.exe
-        Invoke-WebRequest -OutFile msmpisdk.msi https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisdk.msi
-        msmpisetup.exe -unattend
-        msmpisdk.msi /passive
-    - script: |
-        choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
-      displayName: Install MSYS2
-    - script: |
-        set PATH=%MSYS2_ROOT%\usr\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem
-        %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syyuu
-        %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syuu
-      displayName: Update MSYS2
-    - script: |
-        set PATH=%MSYS2_ROOT%\usr\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem
-        if %COMPILER%==gcc ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-toolchain" ) else ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-clang" )
-        %MSYS2_ROOT%\usr\bin\pacman --noconfirm --needed -S ^
-        git ^
-        zip ^
-        unzip ^
-        base-devel ^
-        mingw-w64-$(MSYS2_ARCH)-cmake ^
-        mingw-w64-$(MSYS2_ARCH)-ncurses ^
-        mingw-w64-$(MSYS2_ARCH)-readline ^
-        mingw-w64-$(MSYS2_ARCH)-python2 ^
-        mingw-w64-$(MSYS2_ARCH)-python3 ^
-        mingw64/mingw-w64-$(MSYS2_ARCH)-cython ^
-        mingw-w64-$(MSYS2_ARCH)-python3-setuptools ^
-        mingw-w64-$(MSYS2_ARCH)-python3-pip ^
-        %TOOLCHAIN%
-      displayName: Install Dependencies
-    - script: |
-        %MSYS2_ROOT%\usr\bin\bash -lc "python3 -m pip --disable-pip-version-check install pefile jsonschema"
-      displayName: "Try Python"
+    - task: BatchScript@1
+      displayName: Setup dependencies
+      inputs:
+        filename: setup-dependencies.bat
+        modifyEnvironment: true
