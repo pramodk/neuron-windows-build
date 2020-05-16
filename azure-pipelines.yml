@@ -9,7 +9,13 @@ jobs:
     MSYS2_ROOT: $(System.Workfolder)\msys64
     MSYS2_ARCH: x86_64
     COMPILER: gcc
+    HTTP_RETRIES: 4
   steps:
+    - powershell: |
+        Invoke-WebRequest -MaximumRetryCount $env:TTP_RETRIES -OutFile msmpisetup.exe https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisetup.exe
+        Invoke-WebRequest -MaximumRetryCount $env:HTTP_RETRIES -OutFile msmpisdk.msi https://download.microsoft.com/download/4/A/6/4A6AAED8-200C-457C-AB86-37505DE4C90D/msmpisdk.msi
+        msmpisetup.exe -unattend
+        msmpisdk.msi /passive
     - script: |
         choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
       displayName: Install MSYS2
@@ -31,8 +37,7 @@ jobs:
         mingw-w64-$(MSYS2_ARCH)-readline ^
         mingw-w64-$(MSYS2_ARCH)-python2 ^
         mingw-w64-$(MSYS2_ARCH)-python3 ^
-        mingw-w64-$(MSYS2_ARCH)-cython2 ^
-        mingw-w64-$(MSYS2_ARCH)-cython3 ^
+        mingw64/mingw-w64-$(MSYS2_ARCH)-cython ^
         mingw-w64-$(MSYS2_ARCH)-python3-setuptools ^
         mingw-w64-$(MSYS2_ARCH)-python3-pip ^
         %TOOLCHAIN%
