@@ -1,0 +1,36 @@
+name: $(BuildID)
+
+jobs:
+
+- job: msys2
+  pool:
+    vmImage: VS2017-Win2016
+  variables:
+    MSYS2_ROOT: $(System.Workfolder)\msys64
+    MSYS2_ARCH: x86_64
+    COMPILER: gcc
+  steps:
+    - script: |
+        choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
+      displayName: Install MSYS2
+    - script: |
+        set PATH=%MSYS2_ROOT%\usr\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem
+        %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syyuu
+        %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syuu
+      displayName: Update MSYS2
+    - script: |
+        set PATH=%MSYS2_ROOT%\usr\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem
+        if %COMPILER%==gcc ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-toolchain" ) else ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-clang" )
+        %MSYS2_ROOT%\usr\bin\pacman --noconfirm --needed -S ^
+        git ^
+        mercurial ^
+        mingw-w64-$(MSYS2_ARCH)-cmake ^
+        mingw-w64-$(MSYS2_ARCH)-ninja ^
+        mingw-w64-$(MSYS2_ARCH)-pkg-config ^
+        mingw-w64-$(MSYS2_ARCH)-python2 ^
+        mingw-w64-$(MSYS2_ARCH)-python3 ^
+        mingw-w64-$(MSYS2_ARCH)-python3-setuptools ^
+        mingw-w64-$(MSYS2_ARCH)-python3-pip ^
+        %TOOLCHAIN%
+        %MSYS2_ROOT%\usr\bin\bash -lc "python3 -m pip --disable-pip-version-check install pefile jsonschema"
+      displayName: Install Dependencies
