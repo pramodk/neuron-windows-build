@@ -23,14 +23,20 @@ jobs:
         if %COMPILER%==gcc ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-toolchain" ) else ( set "TOOLCHAIN=mingw-w64-$(MSYS2_ARCH)-clang" )
         %MSYS2_ROOT%\usr\bin\pacman --noconfirm --needed -S ^
         git ^
-        mercurial ^
+        zip ^
+        unzip ^
+        base-devel ^
         mingw-w64-$(MSYS2_ARCH)-cmake ^
-        mingw-w64-$(MSYS2_ARCH)-ninja ^
-        mingw-w64-$(MSYS2_ARCH)-pkg-config ^
+        mingw-w64-$(MSYS2_ARCH)-ncurses ^
+        mingw-w64-$(MSYS2_ARCH)-readline ^
         mingw-w64-$(MSYS2_ARCH)-python2 ^
         mingw-w64-$(MSYS2_ARCH)-python3 ^
+        mingw-w64-$(MSYS2_ARCH)-cython2 ^
+        mingw-w64-$(MSYS2_ARCH)-cython3 ^
         mingw-w64-$(MSYS2_ARCH)-python3-setuptools ^
         mingw-w64-$(MSYS2_ARCH)-python3-pip ^
         %TOOLCHAIN%
-        %MSYS2_ROOT%\usr\bin\bash -lc "python3 -m pip --disable-pip-version-check install pefile jsonschema"
       displayName: Install Dependencies
+    - script: |
+        %MSYS2_ROOT%\usr\bin\bash -lc "python3 -m pip --disable-pip-version-check install pefile jsonschema"
+      displayName: "Try Python"
