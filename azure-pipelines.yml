@@ -22,16 +22,22 @@ jobs:
     - script: |
         msmpisetup.exe -unattend -installroot C:\ms-mpi
         msmpisdk.msi /passive
-        cp c:/Windows/System32/msmpi.dll c:/msmpi/lib/x64
-        cp c:/Windows/SysWoW64/msmpi.dll c:/ms-mpi/lib/x86
-        xcopy.exe "C:\Program Files (x86)\Microsoft SDKs\MPI\Lib" "C:\msmpi\lib\" /s /e /h
-        xcopy.exe "C:\Program Files (x86)\Microsoft SDKs\MPI\Include" "C:\msmpi\include\" /s /e /h
+        :: unify installation directory
+        rename C:\ms-mpi\Bin  bin
+        xcopy.exe "C:\Program Files (x86)\Microsoft SDKs\MPI\Include" "C:\ms-mpi\include\" /s /e /h
+        xcopy.exe "C:\Program Files (x86)\Microsoft SDKs\MPI\Lib" "C:\ms-mpi\lib\" /s /e /h
+        ::move "C:\Program Files (x86)\Microsoft SDKs\MPI\Include" "C:\ms-mpi\include"
+        ::move "C:\Program Files (x86)\Microsoft SDKs\MPI\Lib" "C:\ms-mpi\lib"
+        copy "c:\Windows\System32\msmpi.dll" "c:\ms-mpi\lib\x64\msmpi.dll"
+        copy "c:\Windows\SysWoW64\msmpi.dll" "c:\ms-mpi\lib\x86\msmpi.dll"
+        dir C:\ms-mpi
       displayName: "Install MPI"
     - script: |
         python-3.5.4.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1
         python-3.6.8.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1
         python-3.7.7.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1
         python-3.8.2.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1
+        dir c:\
       displayName: "Install Python"
     - script: |
         choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
