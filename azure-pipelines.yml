@@ -33,10 +33,10 @@ jobs:
         dir C:\ms-mpi
       displayName: "Install MPI"
     - script: |
-        python-3.5.4.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python354
-        python-3.6.8.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python368
-        python-3.7.7.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python377
-        python-3.8.2.exe /quiet InstallAllUsers=1 Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python382
+        python-3.5.4.exe /passive Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python354
+        python-3.6.8.exe /passive Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python368
+        python-3.7.7.exe /passive Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python377
+        python-3.8.2.exe /passive Include_pip=1 Include_test=0 PrependPath=1 DefaultJustForMeTargetDir=C:\python382
         dir c:\
       displayName: "Install Python"
     - script: |
