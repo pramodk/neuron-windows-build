@@ -11,6 +11,17 @@ jobs:
     COMPILER: gcc
     HTTP_RETRIES: 4
   steps:
+    - script: |
+        choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
+      displayName: "Install MSYS2"
+    - script: |
+        choco install --no-progress nsis --version 3.04 -y --allow-downgrade
+      displayName: "Install NSIS"
+    - script: |
+        SET
+        %MSYS2_ROOT%\usr\bin\bash -lc "echo $PWD; env;"
+        %MSYS2_ROOT%\usr\bin\bash -lc "echo $PWD; cd $BUILD_SOURCESDIRECTORY; ls; echo $PWD;"
+      displayName: "Extra Check"
     - pwsh: |
         Invoke-WebRequest -MaximumRetryCount $env:HTTP_RETRIES -OutFile msmpisetup.exe https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisetup.exe
         Invoke-WebRequest -MaximumRetryCount $env:HTTP_RETRIES -OutFile msmpisdk.msi https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisdk.msi
@@ -40,10 +51,6 @@ jobs:
         dir c:\
       displayName: "Install Python"
     - script: |
-        choco install msys2 --params="/InstallDir:%MSYS2_ROOT% /NoUpdate /NoPath"
-        choco install --no-progress nsis.portable --version 3.02 -y
-      displayName: "Install MSYS2"
-    - script: |
         set PATH=%MSYS2_ROOT%\usr\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem
         %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syyuu
         %MSYS2_ROOT%\usr\bin\pacman --noconfirm -Syuu
@@ -66,6 +73,4 @@ jobs:
         mingw-w64-%MSYS2_ARCH%-python3-pip ^
         %TOOLCHAIN%
       displayName: "Install MING2 Packages"
-    - script: |
-        %MSYS2_ROOT%\usr\bin\bash -lc "echo $PWD"
-      displayName: "Extra Check"
+
